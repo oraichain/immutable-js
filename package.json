@@ -1,6 +1,6 @@
 {
-  "name": "immutable",
-  "version": "4.3.2",
+  "name": "@oraichain/immutable",
+  "version": "4.3.4",
   "description": "Immutable Data Collections",
   "license": "MIT",
   "homepage": "https://immutable-js.com",
@@ -77,7 +77,7 @@
     "website:dev": "cd website && next dev",
     "check-git-clean": "./resources/check-git-clean.sh",
     "benchmark": "node ./resources/benchmark.js",
-    "publish": "echo 'ONLY PUBLISH VIA CI'; exit 1;"
+    "ignore:publish": "echo 'ONLY PUBLISH VIA CI'; exit 1;"
   },
   "prettier": {
     "singleQuote": true,

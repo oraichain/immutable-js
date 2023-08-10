@@ -1,11 +1,13 @@
 import { Seq } from './Seq';
 import { OrderedMap } from './OrderedMap';
+import { SortedMap } from './SortedMap';
 import { List } from './List';
 import { Map } from './Map';
 import { Stack } from './Stack';
 import { OrderedSet } from './OrderedSet';
 import { PairSorting } from './PairSorting';
 import { Set } from './Set';
+import { SortedSet } from './SortedSet';
 import { Record } from './Record';
 import { Range } from './Range';
 import { Repeat } from './Repeat';
@@ -26,9 +28,11 @@ import { isSeq } from './predicates/isSeq';
 import { isList } from './predicates/isList';
 import { isMap } from './predicates/isMap';
 import { isOrderedMap } from './predicates/isOrderedMap';
+import { isSortedMap } from './predicates/isSortedMap';
 import { isStack } from './predicates/isStack';
 import { isSet } from './predicates/isSet';
 import { isOrderedSet } from './predicates/isOrderedSet';
+import { isSortedSet } from './predicates/isSortedSet';
 import { isRecord } from './predicates/isRecord';
 
 import { Collection } from './CollectionImpl';
@@ -59,10 +63,12 @@ export default {
   Seq: Seq,
   Map: Map,
   OrderedMap: OrderedMap,
+  SortedMap: SortedMap,
   List: List,
   Stack: Stack,
   Set: Set,
   OrderedSet: OrderedSet,
+  SortedSet: SortedSet,
   PairSorting: PairSorting,
 
   Record: Record,
@@ -85,9 +91,11 @@ export default {
   isList: isList,
   isMap: isMap,
   isOrderedMap: isOrderedMap,
+  isSortedMap: isSortedMap,
   isStack: isStack,
   isSet: isSet,
   isOrderedSet: isOrderedSet,
+  isSortedSet: isSortedSet,
   isRecord: isRecord,
 
   get: get,
@@ -116,10 +124,12 @@ export {
   Seq,
   Map,
   OrderedMap,
+  SortedMap,
   List,
   Stack,
   Set,
   OrderedSet,
+  SortedSet,
   PairSorting,
   Record,
   Range,

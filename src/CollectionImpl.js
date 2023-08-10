@@ -36,9 +36,11 @@ import quoteString from './utils/quoteString';
 import { toJS } from './toJS';
 import { Map } from './Map';
 import { OrderedMap } from './OrderedMap';
+import { SortedMap } from './SortedMap';
 import { List } from './List';
 import { Set } from './Set';
 import { OrderedSet } from './OrderedSet';
+import { SortedSet } from './SortedSet';
 import { Stack } from './Stack';
 import { Range } from './Range';
 import { KeyedSeq, IndexedSeq, SetSeq, ArraySeq } from './Seq';
@@ -62,6 +64,8 @@ import {
   flatMapFactory,
   interposeFactory,
   sortFactory,
+  partialSortFactory,
+  incSortFactory,
   maxFactory,
   zipWithFactory,
   partitionFactory,
@@ -120,9 +124,23 @@ mixin(Collection, {
     return OrderedMap(this.toKeyedSeq());
   },
 
+  toSortedMap(comparator, options) {
+    // Use Late Binding here to solve the circular dependency.
+    return SortedMap(this.toKeyedSeq(), comparator, options);
+  },
+
   toOrderedSet() {
     // Use Late Binding here to solve the circular dependency.
     return OrderedSet(isKeyed(this) ? this.valueSeq() : this);
+  },
+
+  toSortedSet(comparator, options) {
+    // Use Late Binding here to solve the circular dependency.
+    return SortedSet(
+      isKeyed(this) ? this.valueSeq() : this,
+      comparator,
+      options
+    );
   },
 
   toSet() {
@@ -279,6 +297,14 @@ mixin(Collection, {
 
   sort(comparator) {
     return reify(this, sortFactory(this, comparator));
+  },
+
+  partialSort(n, comparator) {
+    return reify(this, partialSortFactory(this, n, comparator));
+  },
+
+  incSort(comparator) {
+    return reify(this, incSortFactory(this, comparator, null, true));
   },
 
   values() {
@@ -457,6 +483,14 @@ mixin(Collection, {
 
   sortBy(mapper, comparator) {
     return reify(this, sortFactory(this, comparator, mapper));
+  },
+
+  partialSortBy(n, mapper, comparator) {
+    return reify(this, partialSortFactory(this, n, comparator, mapper));
+  },
+
+  incSortBy(mapper, comparator) {
+    return reify(this, incSortFactory(this, comparator, mapper, true));
   },
 
   take(amount) {
@@ -655,6 +689,14 @@ mixin(IndexedCollection, {
 
   skipWhile(predicate, context) {
     return reify(this, skipWhileFactory(this, predicate, context, false));
+  },
+
+  incSort(comparator) {
+    return reify(this, incSortFactory(this, comparator, null, false));
+  },
+
+  incSortBy(mapper, comparator) {
+    return reify(this, incSortFactory(this, comparator, mapper, false));
   },
 
   zip(/*, ...collections */) {

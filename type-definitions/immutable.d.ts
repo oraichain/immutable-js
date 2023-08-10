@@ -1968,10 +1968,10 @@ declare namespace Immutable {
     comparator?: (a: string, b: string) => number,
     options?: { type: string; btreeOrder: number }
   ): SortedMap<string, V>;
-  function SortedMap<V>(
-    comparator?: (a: string, b: string) => number,
+  function SortedMap<K, V>(
+    comparator?: (a: K, b: K) => number,
     options?: { type: string; btreeOrder: number }
-  ): SortedMap<string, V>;
+  ): SortedMap<K, V>;
 
   interface SortedMap<K, V> extends Map<K, V> {
     /**

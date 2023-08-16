@@ -347,7 +347,6 @@ export class SortedMap extends Map {
 }
 
 SortedMap.isSortedMap = isSortedMap;
-
 SortedMap.defaultComparator = defaultComparator;
 SortedMap.defaultOptions = {
   type: 'btree',
@@ -529,4 +528,12 @@ SortedMap.getFactory = function (options) {
 
 SortedMap.factories = {
   btree: new SortedMapBtreeNodeFactory(),
+};
+
+// return SortedMap with sorted entries
+SortedMap.rawPack = function (value, comparator, options) {
+  const newRoot = SortedMap.factories.btree
+    .createPacker()
+    .pack(comparator, options, undefined, value);
+  return makeSortedMap(comparator, undefined, value.length, newRoot);
 };

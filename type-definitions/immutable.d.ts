@@ -1683,7 +1683,7 @@ declare namespace Immutable {
    * with O(N) space requirements and O(log N) get, set, and delete operations.
    *
    * ```js
-   * > const { SortedMap } = require('immutable-sorted');
+   * > const { SortedMap } = require('@oraichain/immutable');
    *
    * > const map1=SortedMap([['orange','orange'], ['apple','red'], ['banana','yellow']]);
    * SortedMap { "apple": "red", "banana": "yellow", "orange": "orange" }
@@ -1721,7 +1721,7 @@ declare namespace Immutable {
    *
    * Let's consider the following example with city objects as keys and their co-ordinates as values:
    * ```js
-   * > const { SortedMap, Seq, fromJS } = require('immutable-sorted');
+   * > const { SortedMap, Seq, fromJS } = require('@oraichain/immutable');
    * // Have an array of city objects
    * > const cities=[
    *    [{state: 'MA', city: 'Boston'}, ['42°21′N','71°04′W']],
@@ -1814,7 +1814,7 @@ declare namespace Immutable {
      * True if the provided value is a SortedMap
      *
      * ```js
-     * > const { SortedMap, SortedSet, List, Map, Set } = require('immutable-sorted');
+     * > const { SortedMap, SortedSet, List, Map, Set } = require('@oraichain/immutable');
      * > SortedMap.isSortedMap(SortedMap());
      * true
      * > SortedMap.isSortedMap(SortedSet());
@@ -1830,10 +1830,24 @@ declare namespace Immutable {
     function isSortedMap(maybeSortedMap: any): boolean;
 
     /**
+     * return SortedMap with sorted entries
+     *
+     * ```js
+     * > const { SortedMap } = require('@oraichain/immutable');
+     * > SortedMap.rawPack([[k,v]]);
+     * ```
+     */
+    function rawPack<K, V>(
+      collection?: Iterable<[K, V]>,
+      comparator?: (a: K, b: K) => number,
+      options?: { type: string; btreeOrder: number }
+    ): SortedMap<K, V>;
+
+    /**
      * Creates a new SortedMap from alternating keys and values
      *
      * ```js
-     * > const { SortedMap } = require('immutable-sorted')
+     * > const { SortedMap } = require('@oraichain/immutable')
      * > let sortedMap=SortedMap.of('orange','orange', 'apple','red', 'banana','yellow');
      * SortedMap { "apple": "red", "banana": "yellow", "orange": "orange" }
      * ```
@@ -1879,14 +1893,14 @@ declare namespace Immutable {
    *
    * Create a `SortedMap` from any array of [K,V]:
    * ```js
-   * > const { SortedMap } = require('immutable-sorted');
+   * > const { SortedMap } = require('@oraichain/immutable');
    * > let a=SortedMap([['a','A'], ['c','C'], ['z','Z'], ['u','U'], ['b','B']]);
    * SortedMap { "a": "A", "b": "B", "c": "C", "u": "U", "z": "Z" }
    * ```
    *
    * From a keyed sequence:
    * ```js
-   * > const { SortedMap, SortedSet, List, Map, Seq, Set } = require('immutable-sorted');
+   * > const { SortedMap, SortedSet, List, Map, Seq, Set } = require('@oraichain/immutable');
    *
    * > let seq=Seq({x:'X', c:'B', m:'M', anylabel:'K', f:'F'});
    * Seq { "x": "X", "c": "B", "m": "M", "anylabel": "K", "f": "F" }
@@ -1897,7 +1911,7 @@ declare namespace Immutable {
    *
    * From other collections (List, Range, Set, Map):
    * ```js
-   * > const { SortedMap, List, Map, Range, Seq, Set } = require('immutable-sorted');
+   * > const { SortedMap, List, Map, Range, Seq, Set } = require('@oraichain/immutable');
    * > let list=List(['orange', 'apple', 'banana']);
    * List [ "orange", "apple", "banana" ]
    * > let c=SortedMap(list.toKeyedSeq());
@@ -2068,7 +2082,7 @@ declare namespace Immutable {
      * Keeps printing the nodes recursively until `maxDepth` level is reached.
      *
      * ```js
-     * const { SortedMap } = require('immutable-sorted')
+     * const { SortedMap } = require('@oraichain/immutable')
      * const aSortedMap = Range(0, 8).toSortedMap(undefined, {btreeOrder: 4});
      * sortedMap.print();
      *
@@ -2500,7 +2514,7 @@ declare namespace Immutable {
    * with O(N) space requirements and O(log N) get, add, and delete operations.
    *
    * ```js
-   * > const { SortedSet } = require('immutable-sorted');
+   * > const { SortedSet } = require('@oraichain/immutable');
    *
    * > const set1=SortedSet(['orange', 'apple', 'banana']);
    * SortedSet { "apple", "banana", "orange" }
@@ -2539,7 +2553,7 @@ declare namespace Immutable {
    *
    * Let's consider the following example with city objects:
    * ```js
-   * > const { SortedSet, Seq, fromJS } = require('immutable-sorted');
+   * > const { SortedSet, Seq, fromJS } = require('@oraichain/immutable');
    * // Have an array of city objects
    * > const cities=[
    *    {state: 'MA', city: 'Boston'},
@@ -2627,7 +2641,7 @@ declare namespace Immutable {
      * True if the provided value is a `SortedSet`.
      *
      * ```js
-     * > const { SortedMap, SortedSet, List, Map, Set } = require('immutable-sorted');
+     * > const { SortedMap, SortedSet, List, Map, Set } = require('@oraichain/immutable');
      * > SortedSet.isSortedSet(SortedSet());
      * true
      * > SortedSet.isSortedSet(SortedMap());
@@ -2646,7 +2660,7 @@ declare namespace Immutable {
      * Creates a new `SortedSet` containing `values`.
      *
      * ```js
-     * > const { SortedMap } = require('immutable-sorted');
+     * > const { SortedMap } = require('@oraichain/immutable');
      * > let sortedSet=SortedSet.of("orange", "apple", "banana");
      * SortedSet { "apple", "banana", "orange" }
      * ```
@@ -2658,7 +2672,7 @@ declare namespace Immutable {
      * the keys from this Collection or JavaScript Object.
      *
      * ```js
-     * > const { SortedMap, Map } = require('immutable-sorted');
+     * > const { SortedMap, Map } = require('@oraichain/immutable');
      *
      * > let map=Map({x:'X', c:'B', m:'M', anylabel:'K', f:'F'});
      * > let sortedSet=SortedSet.fromKeys(map);
@@ -2708,14 +2722,14 @@ declare namespace Immutable {
    *
    * Create a `SortedSet` from any array:
    * ```js
-   * > const { SortedMap } = require('immutable-sorted');
+   * > const { SortedMap } = require('@oraichain/immutable');
    * > let a=SortedSet(['a', 'c', 'z', 'u', 'b', 'q', 'd']);
    * SortedSet { "a", "b", "c", "d", "q", "u", "z" }
    * ```
    *
    * From a sequence of values:
    * ```js
-   * > const { SortedMap, SortedSet, List, Map, Seq, Set } = require('immutable-sorted');
+   * > const { SortedMap, SortedSet, List, Map, Seq, Set } = require('@oraichain/immutable');
    *
    * > let seq=Seq({x:'X', c:'B', m:'M', anylabel:'K', f:'F'});
    * Seq { "x": "X", "c": "B", "m": "M", "anylabel": "K", "f": "F" }
@@ -2838,7 +2852,7 @@ declare namespace Immutable {
      *
      * Example:
      * ```js
-     * const { SortedSet } = require('immutable-sorted');
+     * const { SortedSet } = require('@oraichain/immutable');
      *
      * const abc = SortedSet(["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]);
      *

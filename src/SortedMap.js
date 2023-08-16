@@ -538,7 +538,7 @@ SortedMap.rawPack = function (value, comparator, options) {
   return makeSortedMap(
     comparator,
     options,
-    value.size ?? value.length, // is collection or iterator then next list
+    'size' in value ? value.size : value.length, // is collection or iterator then next list
     newRoot
   );
 };

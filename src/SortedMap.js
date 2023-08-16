@@ -535,5 +535,10 @@ SortedMap.rawPack = function (value, comparator, options) {
   const newRoot = SortedMap.factories.btree
     .createPacker()
     .pack(comparator, options, undefined, value);
-  return makeSortedMap(comparator, options, value.length, newRoot);
+  return makeSortedMap(
+    comparator,
+    options,
+    value.size ?? value.length, // is collection or iterator then next list
+    newRoot
+  );
 };

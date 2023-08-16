@@ -15,7 +15,7 @@
   "bugs": {
     "url": "https://github.com/immutable-js/immutable-js/issues"
   },
-  "main": "dist/immutable.min.js",
+  "main": "dist/immutable.js",
   "module": "dist/immutable.es.js",
   "sideEffects": false,
   "types": "dist/immutable.d.ts",

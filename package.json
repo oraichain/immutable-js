@@ -1,6 +1,6 @@
 {
   "name": "@oraichain/immutable",
-  "version": "4.3.5",
+  "version": "4.3.6",
   "description": "Immutable Data Collections",
   "license": "MIT",
   "homepage": "https://immutable-js.com",
@@ -72,6 +72,7 @@
     "build:copy": "cpy ./type-definitions/immutable.* dist",
     "build:prepare": "./resources/prepare-dist.sh",
     "build:stats": "node ./resources/dist-stats.js",
+    "deploy": "yarn publish --access public --patch",
     "unit-test": "jest",
     "website:build": "cd website && next build && next-sitemap && next export",
     "website:dev": "cd website && next dev",

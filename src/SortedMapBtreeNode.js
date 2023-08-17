@@ -38,7 +38,7 @@ class SortedMapBtreeNode extends SortedMapNode {
 
     this.btreeOrder =
       options && options.btreeOrder ? options.btreeOrder : DEFAULT_BTREE_ORDER;
-    this.btreeNodeSplitSize = Math.floor((this.btreeOrder - 1) / 2);
+    this.btreeNodeSplitSize = (this.btreeOrder - 1) >> 1;
 
     this._calcSize();
     return this;
@@ -988,8 +988,8 @@ class SortedMapBtreeNodeIterator extends Iterator {
       if (node.nodes) {
         const maxIndex = node.entries.length + node.nodes.length - 1;
         if (index <= maxIndex) {
-          if (index % 2 === 0) {
-            index /= 2;
+          if ((index & 1) === 0) {
+            index >>= 1;
             const subNode =
               node.nodes[this._reverse ? node.nodes.length - 1 - index : index];
             if (subNode) {
@@ -997,7 +997,7 @@ class SortedMapBtreeNodeIterator extends Iterator {
             }
             continue;
           } else {
-            index = (index - 1) / 2;
+            index >>= 1;
             const entry =
               node.entries[
                 this._reverse ? node.entries.length - 1 - index : index
@@ -1041,15 +1041,10 @@ function mapIteratorFrame(node, prev) {
 // Array manipulation algorithms
 //
 
-function allocArray(n) {
-  const a = new Array(n);
-  return a;
-}
-
 const _indentStr = new Array(120).join(' ');
 
 function indent(level) {
-  let indentCnt = 4 * level;
+  let indentCnt = level << 2;
   if (indentCnt > _indentStr.length) {
     indentCnt = _indentStr.length;
   }
@@ -1065,7 +1060,7 @@ function clone(array, canEdit) {
   }
 
   const newLen = array.length;
-  const newArray = allocArray(newLen);
+  const newArray = new Array(newLen);
   for (let ii = 0; ii < newLen; ii++) {
     newArray[ii] = array[ii];
   }
@@ -1079,7 +1074,7 @@ function setIn(array, idx, val, canEdit) {
   }
 
   const newLen = array.length;
-  const newArray = allocArray(newLen);
+  const newArray = new Array(newLen);
   for (let ii = 0; ii < idx; ii++) {
     newArray[ii] = array[ii];
   }
@@ -1102,7 +1097,7 @@ function spliceIn(array, idx, val, canEdit) {
     return array;
   }
 
-  const newArray = allocArray(newLen);
+  const newArray = new Array(newLen);
   for (let ii = 0; ii < idx; ii++) {
     newArray[ii] = array[ii];
   }
@@ -1128,7 +1123,7 @@ function spliceInN(array, idx, n, valArray, canEdit) {
     return array;
   }
 
-  const newArray = allocArray(newLen);
+  const newArray = new Array(newLen);
   for (let ii = 0; ii < idx; ii++) {
     newArray[ii] = array[ii];
   }
@@ -1152,7 +1147,7 @@ function spliceOut(array, idx, canEdit) {
     return array;
   }
 
-  const newArray = allocArray(newLen);
+  const newArray = new Array(newLen);
   for (let ii = 0; ii < idx; ii++) {
     newArray[ii] = array[ii];
   }
@@ -1173,7 +1168,7 @@ function spliceOutN(array, idx, n, canEdit) {
     return array;
   }
 
-  const newArray = allocArray(newLen);
+  const newArray = new Array(newLen);
   for (let ii = 0; ii < idx; ii++) {
     newArray[ii] = array[ii];
   }
@@ -1198,7 +1193,7 @@ function spliceOutShiftRightN(array, idx, rightN, canEdit) {
     array.length = newLen;
     newArray = array;
   } else {
-    newArray = allocArray(newLen);
+    newArray = new Array(newLen);
   }
 
   for (let ii = newLen - 1, stop = idx + rightN; ii >= stop; ii--) {
@@ -1268,7 +1263,7 @@ function binarySearch(comparator, entries, key, didMatch) {
   let range = entries.length;
 
   while (range > 0) {
-    const half = Math.floor(range / 2);
+    const half = range >> 1;
     const entry = entries[first + half];
     const entryKey = entry[0];
     const cmp = comparator(key, entryKey);
@@ -1385,8 +1380,8 @@ SortedMapBtreeNode.prototype.splitNode = function (
       newNodes = nodes;
     } else {
       // allocate new arrays for entries and nodes
-      newEntries = allocArray(medianIdx);
-      newNodes = allocArray(medianIdx + 1);
+      newEntries = new Array(medianIdx);
+      newNodes = new Array(medianIdx + 1);
 
       // copy the items before idx into new arrays
       for (let i = 0; i < idx; i++) {
@@ -1407,8 +1402,8 @@ SortedMapBtreeNode.prototype.splitNode = function (
     }
   } else if (idx === medianIdx) {
     // allocate the arrays for right node
-    const rightEntries = allocArray(entries.length - medianIdx);
-    const rightNodes = allocArray(nodes.length - medianIdx);
+    const rightEntries = new Array(entries.length - medianIdx);
+    const rightNodes = new Array(nodes.length - medianIdx);
 
     // place subKvn to the beginning of right node arrays
     rightEntries[0] = entries[medianIdx];
@@ -1442,8 +1437,8 @@ SortedMapBtreeNode.prototype.splitNode = function (
       newNodes = nodes;
     } else {
       // allocate new arrays for entries and nodes
-      newEntries = allocArray(medianIdx);
-      newNodes = allocArray(medianIdx + 1);
+      newEntries = new Array(medianIdx);
+      newNodes = new Array(medianIdx + 1);
 
       // copy the items before idx into new arrays
       for (let i = 0; i < medianIdx; i++) {
@@ -1458,8 +1453,8 @@ SortedMapBtreeNode.prototype.splitNode = function (
     // idx > medianIdx
 
     // allocate the arrays for right node
-    const rightEntries = allocArray(entries.length - medianIdx);
-    const rightNodes = allocArray(nodes.length - medianIdx);
+    const rightEntries = new Array(entries.length - medianIdx);
+    const rightNodes = new Array(nodes.length - medianIdx);
 
     // copy the items into the beginning of right node arrays
     const idx0 = medianIdx + 1;
@@ -1547,7 +1542,7 @@ SortedMapBtreeNode.prototype.splitLeaf = function (
       newEntries = entries;
     } else {
       // allocate new arrays for entries and nodes
-      newEntries = allocArray(medianIdx);
+      newEntries = new Array(medianIdx);
 
       // copy the items before idx into new arrays
       for (let i = 0; i < idx; i++) {
@@ -1564,7 +1559,7 @@ SortedMapBtreeNode.prototype.splitLeaf = function (
     }
   } else if (idx === medianIdx) {
     // allocate the arrays for right node
-    const rightEntries = allocArray(entries.length - medianIdx);
+    const rightEntries = new Array(entries.length - medianIdx);
 
     // place subKvn to the beginning of right node arrays
     rightEntries[0] = entries[medianIdx];
@@ -1590,7 +1585,7 @@ SortedMapBtreeNode.prototype.splitLeaf = function (
       newEntries = entries;
     } else {
       // allocate new arrays for entries
-      newEntries = allocArray(medianIdx);
+      newEntries = new Array(medianIdx);
 
       // copy the items before idx into new arrays
       for (let i = 0; i < medianIdx; i++) {
@@ -1601,7 +1596,7 @@ SortedMapBtreeNode.prototype.splitLeaf = function (
     // idx > medianIdx
 
     // allocate the arrays for right node
-    const rightEntries = allocArray(entries.length - medianIdx);
+    const rightEntries = new Array(entries.length - medianIdx);
 
     // copy the items into the beginning of right node arrays
     const idx0 = medianIdx + 1;
@@ -1895,9 +1890,8 @@ SortedMapBtreeNode.prototype.consolidateNode = function (
     outKvn[2] = false;
   }
 
-  const donorAvail = Math.floor(
-    (donorNode.entries.length - this.btreeNodeSplitSize + 1) / 2
-  );
+  const donorAvail =
+    (donorNode.entries.length - this.btreeNodeSplitSize + 1) >> 1;
   if (donorAvail > 0) {
     //
     // OPERATION: MOVE
@@ -2065,7 +2059,7 @@ SortedMapBtreeNode.prototype.consolidateLeaf = function (
     // OPERATION: MOVE
     //
     // move donorAvail entries from donorNode to this leaf through parentNodes
-    const n = Math.floor((donorAvail + 1) / 2);
+    const n = (donorAvail + 1) >> 1;
     if (donorNode === leftNode) {
       moveFromLeftNode(donorNode, n);
     } else {
@@ -2232,7 +2226,7 @@ class SortedMapBtreeNodePacker extends SortedMapPacker {
 
     // Find feasible plan for 2 subtrees and n entries
     n--; // 1 more entry will be in between the two subtrees
-    const n2 = Math.floor(n / 2);
+    const n2 = n >> 1;
     if (n - n2 > 0) {
       plan.push(this.prepareCachedPlan(order, n - n2));
     }
@@ -2307,7 +2301,7 @@ class SortedMapBtreeNodePacker extends SortedMapPacker {
         if (!(plan.total < ec)) {
           failed('Plan verification test failed: plan.total < ec');
         }
-        const halfSize = Math.floor((plan.order - 1) / 2);
+        const halfSize = (plan.order - 1) >> 1;
         if (level > 0 && !(plan.total >= halfSize)) {
           failed(
             'Plan verification test failed: plan.total >= halfSize: ' +
@@ -2449,11 +2443,11 @@ class SortedMapBtreeNodePacker extends SortedMapPacker {
 
   prepareLevel(level) {
     if (!this.stack[level]) {
-      const entries = allocArray(this.order - 1);
+      const entries = new Array(this.order - 1);
       entries.length = 0;
       let nodes;
       if (level > 0) {
-        nodes = allocArray(this.order);
+        nodes = new Array(this.order);
         nodes.length = 0;
       }
       this.stack[level] = new SortedMapBtreeNode(

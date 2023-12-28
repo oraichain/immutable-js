@@ -75,5 +75,48 @@ import { List, Map, Record, Set, Seq, DeepCopy, Collection } from 'immutable';
   // should handle circular references here somehow
   // $ExpectType { title: string; tag: unknown; }
   type Circular = DeepCopy<Article>;
-  //   ^?
+}
+
+{
+  // Circular references #1957
+
+  class Foo1 extends Record<{
+    foo: undefined | Foo1;
+  }>({
+    foo: undefined
+  }) {
+  }
+
+  class Foo2 extends Record<{
+    foo?: Foo2;
+  }>({
+    foo: undefined
+  }) {
+  }
+
+  class Foo3 extends Record<{
+    foo: null | Foo3;
+  }>({
+    foo: null
+  }) {
+  }
+
+  // $ExpectType { foo: unknown; }
+  type DeepFoo1 = DeepCopy<Foo1>;
+
+  // $ExpectType { foo?: unknown; }
+  type DeepFoo2 = DeepCopy<Foo2>;
+
+  // $ExpectType { foo: unknown; }
+  type DeepFoo3 = DeepCopy<Foo3>;
+
+  class FooWithList extends Record<{
+    foos: undefined | List<FooWithList>;
+  }>({
+    foos: undefined
+  }) {
+  }
+
+  // $ExpectType { foos: unknown; }
+  type DeepFooList = DeepCopy<FooWithList>;
 }
